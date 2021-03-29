@@ -25,8 +25,10 @@ app.use(bodyParser.json());
 app.use(expressValidator());
 
 const postRoutes = require("./routes/post");
+const authRoutes = require("./routes/auth");
 
 app.use("/", postRoutes);
+app.use("/", authRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

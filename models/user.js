@@ -34,13 +34,12 @@ userSchema
     //encrypt the password
     this.hashed_password = this.encryptPassword(password);
   })
-  .get(() => {
+  .get(function() {
     return this._password;
   });
 
-//methods/encryption process
 userSchema.methods = {
-  encryptPassword: (password) => {
+  encryptPassword: function (password) {
     if (!password) return "";
     try {
       return crypto
@@ -52,5 +51,6 @@ userSchema.methods = {
     }
   },
 };
+//methods/encryption process
 
 module.exports = mongoose.model("User", userSchema);
