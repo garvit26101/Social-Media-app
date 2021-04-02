@@ -51,6 +51,13 @@ const userSchema = new mongoose.Schema({
 //     }
 //   },
 // };
+
+userSchema.methods = {
+  //havent hashed password thats why cheking with plain password
+  authenticate: function (plainText) {
+    return plainText === this.password;
+  },
+};
 //methods/encryption process
 
 module.exports = mongoose.model("User", userSchema);

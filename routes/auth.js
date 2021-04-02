@@ -1,11 +1,12 @@
 const express = require("express");
-const { signup } = require("../controllers/auth");
-const {userSignupValidator} = require("../validator");
+const { signup,signin,signout } = require("../controllers/auth");
+const { userSignupValidator } = require("../validator");
 //index.js file automatically reads
 
 const router = express.Router();
 
-
-router.post("/signup", userSignupValidator,signup);
+router.post("/signup", userSignupValidator, signup);
+router.post("/signin", signin);
+router.get("/signout", signout);
 
 module.exports = router;
