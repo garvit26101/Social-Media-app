@@ -2,8 +2,9 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
-const expressValidator = require('express-validator');
+const cookieParser = require("cookie-parser");
+const expressValidator = require("express-validator");
+const fs = require("fs");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -19,12 +20,23 @@ mongoose.connection.on("error", (err) => {
   console.log(`DB error ${err.message}`);
 });
 
-
-
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressValidator());
+
+app.get("/", (req, res) => {
+  fs.readFile("docs/apiDocs.json", (err, data) => {
+    if (err) {
+      res.status(400).json({
+        error: err,
+      });
+    }
+    const docs = JSON.parse(data);
+    // console.log(docs);
+    res.json(docs);
+  });
+});
 
 const postRoutes = require("./routes/post");
 const authRoutes = require("./routes/auth");
@@ -34,12 +46,11 @@ app.use("/", postRoutes);
 app.use("/", authRoutes);
 app.use("/", userRoutes);
 
-app.use( (err, req, res, next) => {
-  if (err.name === 'UnauthorizedError') {
-    res.status(401).json({error:"Unauthorized!"});
+app.use((err, req, res, next) => {
+  if (err.name === "UnauthorizedError") {
+    res.status(401).json({ error: "Unauthorized!" });
   }
 });
-
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
