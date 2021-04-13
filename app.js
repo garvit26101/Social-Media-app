@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const expressValidator = require("express-validator");
 const fs = require("fs");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -23,6 +24,7 @@ mongoose.connection.on("error", (err) => {
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(cors());
 app.use(expressValidator());
 
 app.get("/", (req, res) => {
