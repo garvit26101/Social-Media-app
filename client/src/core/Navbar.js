@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 
+//just for showing active links,history contains endpoints
 const isActive = (history, path) => {
   if (history.location.pathname === path) return { color: "#ff9900" };
   else return { color: "#ffffff" };
@@ -19,6 +20,18 @@ export const signout = (next) => {
     .catch((err) => console.log(err));
 };
 
+export const isAuthenticated = () => {
+  if (typeof window == "undefined") {
+    return false;
+  }
+
+  if (localStorage.getItem("jwt")) {
+    return JSON.parse(localStorage.getItem("jwt"));
+  } else {
+    return false;
+  }
+};
+
 const Navbar = ({ history }) => {
   return (
     <div>
@@ -28,33 +41,54 @@ const Navbar = ({ history }) => {
             Home
           </Link>
         </li>
-        <li className="nav-item">
-          <Link
-            className="nav-link"
-            style={isActive(history, "/signin")}
-            to="/signin"
-          >
-            Sign In
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link
-            className="nav-link"
-            style={isActive(history, "/signup")}
-            to="/signup"
-          >
-            Sign Up
-          </Link>
-        </li>
-        <li className="nav-item">
-          <a
-            className="nav-link"
-            style={isActive(history, "/signup"),{cursor:"pointer",color:"#fff"}}
-            onClick={() => signout(() => history.push("/"))}
-          >
-            Sign Out
-          </a>
-        </li>
+
+        {!isAuthenticated() && (
+          <>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                style={isActive(history, "/signin")}
+                to="/signin"
+              >
+                Sign In
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                style={isActive(history, "/signup")}
+                to="/signup"
+              >
+                Sign Up
+              </Link>
+            </li>
+          </>
+        )}
+
+        {isAuthenticated() && (
+            <>
+          <li className="nav-item">
+            <Link
+              href="/"
+              className="nav-link"
+              style={
+                (isActive(history, "/signup"),
+                { cursor: "pointer", color: "#ffffff" })
+              }
+              onClick={() => signout(() => history.push("/"))}
+            >
+              Sign Out
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link
+              className="nav-link"
+            >
+              {isAuthenticated().user.name}
+            </Link>
+          </li>
+          </>
+        )}
       </ul>
     </div>
   );
