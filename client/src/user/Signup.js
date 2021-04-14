@@ -41,7 +41,7 @@ class Signup extends Component {
   };
 
   signup = (user) => {
-    return fetch("http://localhost:8080/signup", {
+    return fetch(`${process.env.REACT_APP_API_URL}/signup`, {
       method: "POST",
       headers: {
         Accept: "application/json",

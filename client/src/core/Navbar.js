@@ -10,7 +10,7 @@ const isActive = (history, path) => {
 export const signout = (next) => {
   if (typeof window !== "undefined") localStorage.removeItem("jwt");
   next();
-  return fetch("http://localhost:8080/signout", {
+  return fetch(`${process.env.REACT_APP_API_URL}/signout`, {
     method: "GET",
   })
     .then((res) => {
@@ -83,8 +83,9 @@ const Navbar = ({ history }) => {
           <li className="nav-item">
             <Link
               className="nav-link"
+              to={`/user/${isAuthenticated().user._id}`}
             >
-              {isAuthenticated().user.name}
+              {`${isAuthenticated().user.name}'s Profile`}
             </Link>
           </li>
           </>
