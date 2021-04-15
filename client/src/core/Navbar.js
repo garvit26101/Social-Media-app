@@ -69,7 +69,7 @@ const Navbar = ({ history }) => {
             <>
           <li className="nav-item">
             <Link
-              href="/"
+              to="/"
               className="nav-link"
               style={
                 (isActive(history, "/signup"),
