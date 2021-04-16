@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 class Signup extends Component {
   constructor() {
@@ -88,7 +89,7 @@ class Signup extends Component {
         Submit
       </button>
     </form>
-  )
+  );
 
   render() {
     const { name, email, password, error } = this.state;
@@ -109,7 +110,7 @@ class Signup extends Component {
           className="alert alert-info"
           style={{ display: open ? "" : "none" }}
         >
-          New account is created. Please Sign In!!
+          New account is created. Please <Link to="/signin">Sign In</Link>
         </div>
 
         {this.signupForm(name, email, password)}
