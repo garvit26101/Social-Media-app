@@ -66,28 +66,29 @@ const Navbar = ({ history }) => {
         )}
 
         {isAuthenticated() && (
-            <>
-          <li className="nav-item">
-            <Link
-              to="/"
-              className="nav-link"
-              style={
-                (isActive(history, "/signup"),
-                { cursor: "pointer", color: "#ffffff" })
-              }
-              onClick={() => signout(() => history.push("/"))}
-            >
-              Sign Out
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              className="nav-link"
-              to={`/user/${isAuthenticated().user._id}`}
-            >
-              {`${isAuthenticated().user.name}'s Profile`}
-            </Link>
-          </li>
+          <>
+            <li className="nav-item">
+              <Link
+                to="/"
+                className="nav-link"
+                style={
+                  (isActive(history, "/signup"),
+                  { cursor: "pointer", color: "#ffffff" })
+                }
+                onClick={() => signout(() => history.push("/"))}
+              >
+                Sign Out
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                style={isActive(history, `/user/${isAuthenticated().user._id}`)}
+                className="nav-link"
+                to={`/user/${isAuthenticated().user._id}`}
+              >
+                {`${isAuthenticated().user.name}'s Profile`}
+              </Link>
+            </li>
           </>
         )}
       </ul>
