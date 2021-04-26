@@ -1,16 +1,20 @@
 const express = require("express");
 
-const { userById,allUsers,getUser,updateUser,deleteUser } = require("../controllers/user");
+const {
+  userById,
+  allUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+} = require("../controllers/user");
 const { requireSignin } = require("../controllers/auth");
-
 
 const router = express.Router();
 
-
 router.get("/users", allUsers);
-router.get("/user/:userId",requireSignin, getUser);
-router.put("/user/:userId",requireSignin, updateUser);
-router.put("/user/:userId",requireSignin, deleteUser);
+router.get("/user/:userId", requireSignin, getUser);
+router.put("/user/:userId", requireSignin, updateUser);
+router.delete("/user/:userId", requireSignin, deleteUser);
 
 //any route containing :userId app will first execute userById() method
 router.param("userId", userById);

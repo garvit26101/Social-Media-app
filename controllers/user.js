@@ -64,6 +64,7 @@ exports.updateUser = (req, res, next) => {
 
 exports.deleteUser = (req, res, next) => {
   let user = req.profile;
+  console.log(user);
   user.remove((err, user) => {
     if (err) {
       return res.status(400).json({

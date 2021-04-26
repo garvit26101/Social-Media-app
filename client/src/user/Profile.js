@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { isAuthenticated } from "../core/Navbar";
 import avatar from "../images/avatar.jpg";
+import DeleteUser from "./DeleteUser";
 
 class Profile extends Component {
   constructor() {
@@ -39,6 +40,12 @@ class Profile extends Component {
     const userId = this.props.match.params.userId;
     this.init(userId);
   }
+
+  componentWillReceiveProps(props) {
+    const userId = props.match.params.userId;
+    this.init(userId);
+  }
+
 
   render() {
     const { redirectToSignin, user } = this.state;
@@ -82,9 +89,7 @@ class Profile extends Component {
                 >
                   Edit Profile
                 </Link>
-                <button className="btn btn-raised btn-danger">
-                  Delete Profile
-                </button>
+                <DeleteUser userId={user._id} />
               </div>
             )}
           </div>
