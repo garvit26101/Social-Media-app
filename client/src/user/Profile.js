@@ -4,6 +4,7 @@ import { isAuthenticated } from "../core/Navbar";
 import avatar from "../images/avatar.jpg";
 import DeleteUser from "./DeleteUser";
 import FollowProfileButton from "./FollowProfileButton";
+import ProfileTabs from "./ProfileTabs";
 
 class Profile extends Component {
   constructor() {
@@ -27,22 +28,20 @@ class Profile extends Component {
     return match;
   };
 
- 
-
-  clickFollowButton = callFollowMethod => {
+  clickFollowButton = (callFollowMethod) => {
     const userId = isAuthenticated().user._id;
     const token = isAuthenticated().token;
 
     let followId = this.state.user._id;
 
-    callFollowMethod(userId,token,followId)
-      .then((data) => {
-        if (data.error) {
-          this.setState({ error: data.error });
-        } else {
-          this.setState({ user: data, following: !this.state.following });
-        }
-      });
+    callFollowMethod(userId, token, followId).then((data) => {
+      if (data.error) {
+        this.setState({ error: data.error });
+      } else {
+        console.log(data)
+        this.setState({ user: data, following: !this.state.following });
+      }
+    });
   };
 
   init = (userId) => {
@@ -125,12 +124,18 @@ class Profile extends Component {
                 onButtonClick={this.clickFollowButton}
               />
             )}
+
           </div>
         </div>
         <div className="row">
           <div className="col md-12 mt-5 mb-5">
             <hr />
             <p className="lead">{user.about}</p>
+            <hr/>
+            <ProfileTabs
+              followers={user.followers}
+              following={user.following}
+            />
           </div>
         </div>
       </div>
