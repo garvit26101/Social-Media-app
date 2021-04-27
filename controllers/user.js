@@ -5,6 +5,9 @@ const fs = require("fs");
 
 exports.userById = (req, res, next, id) => {
   User.findById(id)
+    //populate followers and following array
+    .populate("following", "_id name")
+    .populate("followers", "_id name")
     .exec((err, user) => {
       if (err || !user) {
         return res.status(400).json({
@@ -64,48 +67,45 @@ exports.getUser = (req, res) => {
 //   });
 // };
 
-exports.updateUser = (req,res,next) => {
-  let form = new formidable.IncomingForm()
-  form.keepExtensions = true
-  form.parse(req, (err,fields,files) => {
-
-      if(err){
-        return res.status(400).json({
-          error:"Photo could not be updated"
-        })
-      }
-
-      //save user
-      let user = req.profile
-      user = _.extend(user,fields)
-      user.updated = Date.now()
-
-      if(files.photo) {
-        user.photo.data = fs.readFileSync(files.photo.path)
-        user.photo.contentType = files.photo.type
-      }
-
-      user.save((err,result) => {
-        if(err){
-          return res.status(400).json({
-            error:err
-          })
-        }
-        user.password = undefined
-        res.json(user)
+exports.updateUser = (req, res, next) => {
+  let form = new formidable.IncomingForm();
+  form.keepExtensions = true;
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Photo could not be updated",
       });
+    }
 
+    //save user
+    let user = req.profile;
+    user = _.extend(user, fields);
+    user.updated = Date.now();
+
+    if (files.photo) {
+      user.photo.data = fs.readFileSync(files.photo.path);
+      user.photo.contentType = files.photo.type;
+    }
+
+    user.save((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      user.password = undefined;
+      res.json(user);
+    });
   });
-
 };
 
-exports.userPhoto = (req,res,next) => {
-  if(req.profile.photo.data){
+exports.userPhoto = (req, res, next) => {
+  if (req.profile.photo.data) {
     res.set(("Content-Type", req.profile.photo.contentType));
-    return res.send(req.profile.photo.data)
+    return res.send(req.profile.photo.data);
   }
   next();
-}
+};
 
 exports.deleteUser = (req, res, next) => {
   let user = req.profile;
@@ -119,4 +119,65 @@ exports.deleteUser = (req, res, next) => {
 
     res.json({ message: "User deleted Successfully!" });
   });
+};
+
+//follow unfollow
+exports.addFollowing = (req, res, next) => {
+  User.findByIdAndUpdate(
+    req.body.userId,
+    { $push: { following: req.body.followId } },
+    (err, result) => {
+      if (err) {
+        return res.status(400).json({ error: err });
+      }
+      next();
+    }
+  );
+};
+
+exports.addFollower = (req, res, next) => {
+  User.findByIdAndUpdate(
+    req.body.followId,
+    { $push: { followers: req.body.userId } },
+    { new: true }
+  )
+    .populate("following", "_id name")
+    .populate("followers", "_id name")
+    .exec((err, result) => {
+      if (err) {
+        return res.status(400).json({ error: err });
+      }
+      result.password = undefined;
+      res.json(result);
+    });
+};
+
+exports.removeFollowing = (req, res, next) => {
+  User.findByIdAndUpdate(
+    req.body.userId,
+    { $pull: { following: req.body.unfollowId } },
+    (err, result) => {
+      if (err) {
+        return res.status(400).json({ error: err });
+      }
+      next();
+    }
+  );
+};
+
+exports.removeFollower = (req, res, next) => {
+  User.findByIdAndUpdate(
+    req.body.unfollowId,
+    { $pull: { followers: req.body.userId } },
+    { new: true }
+  )
+    .populate("following", "_id name")
+    .populate("followers", "_id name")
+    .exec((err, result) => {
+      if (err) {
+        return res.status(400).json({ error: err });
+      }
+      result.password = undefined;
+      res.json(result);
+    });
 };

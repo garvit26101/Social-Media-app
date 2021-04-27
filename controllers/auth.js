@@ -22,7 +22,7 @@ exports.signin = (req, res) => {
     //if error or no user
     if (err || !user) {
       return res.status(401).json({
-        error: "User with that email does not exist. Please Signin.",
+        error: "User with that email does not exist. Please SignUp.",
       });
     }
 

@@ -3,15 +3,47 @@ import { Redirect, Link } from "react-router-dom";
 import { isAuthenticated } from "../core/Navbar";
 import avatar from "../images/avatar.jpg";
 import DeleteUser from "./DeleteUser";
+import FollowProfileButton from "./FollowProfileButton";
 
 class Profile extends Component {
   constructor() {
     super();
     this.state = {
-      user: "",
+      user: { following: [], followers: [] },
       redirectToSignin: false,
+      following: false,
+      error: "",
     };
   }
+
+  //check if follow
+  checkFollow = (user) => {
+    const jwt = isAuthenticated();
+    const match = user.followers.find((follower) => {
+      //one id has many other ids(followers) and vice versa
+      return follower._id === jwt.user._id;
+    });
+    //return true or false
+    return match;
+  };
+
+ 
+
+  clickFollowButton = callFollowMethod => {
+    const userId = isAuthenticated().user._id;
+    const token = isAuthenticated().token;
+
+    let followId = this.state.user._id;
+
+    callFollowMethod(userId,token,followId)
+      .then((data) => {
+        if (data.error) {
+          this.setState({ error: data.error });
+        } else {
+          this.setState({ user: data, following: !this.state.following });
+        }
+      });
+  };
 
   init = (userId) => {
     fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
@@ -31,7 +63,7 @@ class Profile extends Component {
           this.setState({ redirectToSignin: true });
         } else {
           // console.log(data);
-          this.setState({ user: data });
+          this.setState({ user: data, following: this.checkFollow(data) });
         }
       });
   };
@@ -65,7 +97,7 @@ class Profile extends Component {
               style={{ height: "200px", width: "auto" }}
               className="img-thumbnail"
               src={photoUrl}
-              onError={i => i.target.src=`${avatar}`}
+              onError={(i) => (i.target.src = `${avatar}`)}
               alt={user.name}
             />
           </div>
@@ -76,7 +108,8 @@ class Profile extends Component {
               <p>{`Joined on ${new Date(user.created).toDateString()} `}</p>
             </div>
 
-            {isAuthenticated().user && isAuthenticated().user._id === user._id && (
+            {isAuthenticated().user &&
+            isAuthenticated().user._id === user._id ? (
               <div className="d-inline-block">
                 <Link
                   className="btn btn-raised btn-success mr-5"
@@ -86,12 +119,17 @@ class Profile extends Component {
                 </Link>
                 <DeleteUser userId={user._id} />
               </div>
+            ) : (
+              <FollowProfileButton
+                following={this.state.following}
+                onButtonClick={this.clickFollowButton}
+              />
             )}
           </div>
         </div>
         <div className="row">
           <div className="col md-12 mt-5 mb-5">
-          <hr />
+            <hr />
             <p className="lead">{user.about}</p>
           </div>
         </div>
