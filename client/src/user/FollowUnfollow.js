@@ -16,7 +16,7 @@ export const follow = (userId, token, followId) => {
 
 
 export const unfollow = (userId, token, unfollowId) => {
-    return fetch(`${process.env.REACT_APP_API_URL}/user/follow`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/user/unfollow`, {
         method: "PUT",
         headers: {
           Accept: "application/json",

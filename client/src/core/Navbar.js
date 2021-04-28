@@ -36,17 +36,18 @@ const Navbar = ({ history }) => {
   return (
     <div>
       <ul className="nav nav-tabs bg-primary">
-
-
         <li className="nav-item">
           <Link className="nav-link" style={isActive(history, "/")} to="/">
             Home
           </Link>
         </li>
 
-
         <li className="nav-item">
-          <Link className="nav-link" style={isActive(history, "/users")} to="/users">
+          <Link
+            className="nav-link"
+            style={isActive(history, "/users")}
+            to="/users"
+          >
             Users
           </Link>
         </li>
@@ -92,6 +93,16 @@ const Navbar = ({ history }) => {
 
             <li className="nav-item">
               <Link
+                to={"/post/create"}
+                className="nav-link"
+                style={isActive(history, "/post/create")}
+              >
+                Create Post
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link
                 style={isActive(history, `/user/${isAuthenticated().user._id}`)}
                 className="nav-link"
                 to={`/user/${isAuthenticated().user._id}`}
@@ -99,7 +110,6 @@ const Navbar = ({ history }) => {
                 {`${isAuthenticated().user.name}'s Profile`}
               </Link>
             </li>
-
           </>
         )}
       </ul>
