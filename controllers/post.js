@@ -1,7 +1,7 @@
 const Post = require("../models/post");
 const formidable = require("formidable");
 const fs = require("fs");
-const _ = require('lodash');
+const _ = require("lodash");
 
 exports.postById = (req, res, next, id) => {
   Post.findById(id)
@@ -21,7 +21,7 @@ exports.getPosts = (req, res) => {
   const posts = Post.find()
     .populate("postedBy", "_id name")
     .select("_id title body created")
-    .sort({created:-1})
+    .sort({ created: -1 })
     .then((posts) => {
       res.json(posts);
     })
@@ -71,8 +71,7 @@ exports.postsByUser = (req, res) => {
     });
 };
 
-exports.isPoster = (req,res,next) => {
-
+exports.isPoster = (req, res, next) => {
   let isPoster = req.post && req.auth && req.post.postedBy._id == req.auth._id;
 
   console.log("req.post: ", req.post);
@@ -80,41 +79,45 @@ exports.isPoster = (req,res,next) => {
   console.log("req.post.postedby: ", req.post.postedBy._id);
   console.log("req.auth._id: ", req.auth._id);
 
-  if(!isPoster){
+  if (!isPoster) {
     return res.status(403).json({
-      error:"User is not authorized!!!"
+      error: "User is not authorized!!!",
     });
   }
   next();
 };
 
-exports.updatePost = (req,res,next) => {
-  let post = req.post
-  post = _.extend(post,req.body)
+exports.updatePost = (req, res, next) => {
+  let post = req.post;
+  post = _.extend(post, req.body);
   post.updated = Date.now();
-  post.save(err => {
-    if(err){
-      return res.status(400).json({error:err})
+  post.save((err) => {
+    if (err) {
+      return res.status(400).json({ error: err });
     }
-    res.json({post});
+    res.json({ post });
   });
-}
+};
 
-exports.deletePost = (req,res) => {
-  let post = req.post
-  post.remove((err,post) => {
-     if(err){
-       return res.status(400).json({
-         error:err
-       })
-     }
-     res.json({
-       message:"Post deleted Successfully!"
-     });
+exports.deletePost = (req, res) => {
+  let post = req.post;
+  post.remove((err, post) => {
+    if (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    }
+    res.json({
+      message: "Post deleted Successfully!",
+    });
   });
-}
+};
 
-exports.postPhoto = (req,res,next) => {
-  res.set("Content-Type",req.post.photo.contentType)
+exports.postPhoto = (req, res, next) => {
+  res.set("Content-Type", req.post.photo.contentType);
   return res.send(req.post.photo.data);
-}
+};
+
+exports.singlePost = (req, res) => {
+  return res.json(req.post);
+};

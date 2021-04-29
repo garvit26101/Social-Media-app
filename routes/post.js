@@ -7,11 +7,13 @@ const {
   isPoster,
   deletePost,
   updatePost,
-  postPhoto
+  postPhoto,
+  singlePost,
 } = require("../controllers/post");
 const { userById } = require("../controllers/user");
 const { requireSignin } = require("../controllers/auth");
 const { createPostValidator } = require("../validator");
+
 //index.js file automatically reads
 
 const router = express.Router();
@@ -24,11 +26,12 @@ router.post(
   createPostValidator
 );
 router.get("/posts/by/:userId", requireSignin, postsByUser);
+router.get("/post/:postId", singlePost);
 router.put("/post/:postId", requireSignin, isPoster, updatePost);
 router.delete("/post/:postId", requireSignin, isPoster, deletePost);
 
 //photo
-router.get('/post/photo/:postId', postPhoto);
+router.get("/post/photo/:postId", postPhoto);
 
 //any route containing :userId app will first execute userById() method
 router.param("userId", userById);
