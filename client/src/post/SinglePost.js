@@ -35,9 +35,7 @@ class SinglePost extends Component {
   };
 
   deleteConfirmed = () => {
-    let answer = window.confirm(
-      "Are you sure you want to delete this Post?"
-    )
+    let answer = window.confirm("Are you sure you want to delete this Post?");
     if (answer) {
       this.deletePost();
     }
@@ -72,9 +70,12 @@ class SinglePost extends Component {
           {isAuthenticated().user &&
             isAuthenticated().user._id === post.postedBy._id && (
               <>
-                <button className="btn btn-danger btn-raised mr-5">
+                <Link
+                  to={`/post/edit/${post._id}`}
+                  className="btn btn-raised btn-danger btn-sm mr-5"
+                >
                   Update Post
-                </button>
+                </Link>
                 <button
                   onClick={this.deleteConfirmed}
                   className="btn btn-warning btn-raised"
