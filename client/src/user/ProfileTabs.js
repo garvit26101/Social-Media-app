@@ -4,15 +4,17 @@ import avatar from "../images/avatar.jpg";
 
 class ProfileTabs extends Component {
   render() {
-    const { following, followers } = this.props;
+    const { following, followers, posts } = this.props;
 
     function getUniqueListBy(arr, key) {
-        return [...new Map(arr.map(item => [item[key], item])).values()]
+      return [...new Map(arr.map((item) => [item[key], item])).values()];
     }
 
-    const newFollowers = getUniqueListBy(followers, 'name');
-    const newFollowing = getUniqueListBy(following, 'name');
-    
+    //removing duplicates
+    const newFollowers = getUniqueListBy(followers, "name");
+    const newFollowing = getUniqueListBy(following, "name");
+  
+
     return (
       <div>
         <div className="row">
@@ -68,6 +70,19 @@ class ProfileTabs extends Component {
 
           <div className="col-md-4">
             <h3 className="text-primary">Posts</h3>
+            
+            <hr />
+            {posts.map((post, i) => {
+              return (
+                <div key={i}>
+                  <Link to={`/post/${post._id}`}>
+                    <div>
+                      <p className="lead">{post.title}</p>
+                    </div>
+                  </Link>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -76,3 +91,4 @@ class ProfileTabs extends Component {
 }
 
 export default ProfileTabs;
+
