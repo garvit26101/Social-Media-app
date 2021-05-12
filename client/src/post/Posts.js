@@ -12,6 +12,7 @@ class Posts extends Component {
   }
 
   componentDidMount = () => {
+
     List().then((data) => {
       if (data.error) {
         console.log(data.error);
@@ -19,16 +20,21 @@ class Posts extends Component {
         this.setState({ posts: data });
       }
     });
+    
   };
 
   render() {
+
+
     const { posts } = this.state;
+
 
     return (
       <div className="container">
         <h2 className="mt-5 mb-5">{!posts.length ? 'Loading...' : 'Recent Posts'}</h2>
         <div className="row">
           {posts.map((post, i) => {
+
             const posterId = post.postedBy ? `/user/${post.postedBy._id}` : "";
             const posterName = post.postedBy ? post.postedBy.name : " Unknown";
 

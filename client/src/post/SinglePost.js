@@ -1,13 +1,24 @@
 import React, { Component } from "react";
-import { singlePost, remove } from "./apiPost";
+import { singlePost, remove, like, unlike } from "./apiPost";
 import mountain from "../images/mountain.jpg";
 import { Link, Redirect } from "react-router-dom";
 import { isAuthenticated } from "../core/Navbar";
+import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class SinglePost extends Component {
   state = {
     post: "",
     redirectToHome: false,
+    redirectToSignin: false,
+    like: false,
+    likes: 0,
+  };
+
+  checkLike = (likes) => {
+    const userId = isAuthenticated() && isAuthenticated().user._id;
+    let match = likes.indexOf(userId) !== -1;
+    return match;
   };
 
   componentDidMount = () => {
@@ -16,7 +27,35 @@ class SinglePost extends Component {
       if (data.error) {
         console.log(data.error);
       } else {
-        this.setState({ post: data });
+        this.setState({
+          post: data,
+          likes: data.likes.length,
+          like: this.checkLike(data.likes),
+        });
+      }
+    });
+  };
+
+  likeToggle = () => {
+    if (!isAuthenticated()) {
+      this.setState({ redirectToSignin: true });
+      return false;
+    }
+
+    let callApi = this.state.like ? unlike : like;
+
+    const userId = isAuthenticated().user._id;
+    const postId = this.state.post._id;
+    const token = isAuthenticated().token;
+
+    callApi(userId, token, postId).then((data) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        this.setState({
+          like: !this.state.like,
+          likes: data.likes.length,
+        });
       }
     });
   };
@@ -45,6 +84,8 @@ class SinglePost extends Component {
     const posterId = post.postedBy ? `/user/${post.postedBy._id}` : "";
     const posterName = post.postedBy ? post.postedBy.name : " Unknown";
 
+    const { like, likes } = this.state;
+
     return (
       <div className="card-body">
         <img
@@ -54,6 +95,38 @@ class SinglePost extends Component {
           className="img-thumbnail mb-3"
           style={{ height: "300px", width: "100%", objectFit: "cover" }}
         />
+
+        {like ? (
+          <h3>
+            <FontAwesomeIcon
+              icon={faThumbsUp}
+              onClick={this.likeToggle}
+              className="text-success bg-dark"
+              style={{
+                padding: "5px",
+                marginRight: "10px",
+                borderRadius: "50%",
+                cursor: "pointer"
+              }}
+            />
+            {likes} Like
+          </h3>
+        ) : (
+          <h3>
+            <FontAwesomeIcon
+              icon={faThumbsUp}
+              onClick={this.likeToggle}
+              className="text-warning bg-dark"
+              style={{
+                padding: "5px",
+                marginRight: "10px",
+                borderRadius: "50%",
+                cursor: "pointer"
+              }}
+            />
+            {likes} Like
+          </h3>
+        )}
 
         <p className="card-text">{post.body}</p>
         <br />
@@ -90,10 +163,12 @@ class SinglePost extends Component {
   };
 
   render() {
-    const { post, redirectToHome } = this.state;
+    const { post, redirectToHome, redirectToSignin } = this.state;
 
     if (redirectToHome) {
       return <Redirect to={`/`} />;
+    } else if (redirectToSignin) {
+      return <Redirect to={`/signin`} />;
     }
 
     return (

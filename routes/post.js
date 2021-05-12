@@ -9,6 +9,8 @@ const {
   updatePost,
   postPhoto,
   singlePost,
+  like,
+  unlike,
 } = require("../controllers/post");
 const { userById } = require("../controllers/user");
 const { requireSignin } = require("../controllers/auth");
@@ -19,6 +21,12 @@ const { createPostValidator } = require("../validator");
 const router = express.Router();
 
 router.get("/posts", getPosts);
+
+
+//like unlike
+router.put("/post/like", requireSignin, like);
+router.put("/post/unlike", requireSignin, unlike);
+
 router.post(
   "/post/new/:userId",
   requireSignin,
@@ -32,6 +40,7 @@ router.delete("/post/:postId", requireSignin, isPoster, deletePost);
 
 //photo
 router.get("/post/photo/:postId", postPhoto);
+
 
 //any route containing :userId app will first execute userById() method
 router.param("userId", userById);
