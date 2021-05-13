@@ -5,6 +5,7 @@ import { Link, Redirect } from "react-router-dom";
 import { isAuthenticated } from "../core/Navbar";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Comment from "./Comment";
 
 class SinglePost extends Component {
   state = {
@@ -13,6 +14,7 @@ class SinglePost extends Component {
     redirectToSignin: false,
     like: false,
     likes: 0,
+    comments: [],
   };
 
   checkLike = (likes) => {
@@ -31,9 +33,14 @@ class SinglePost extends Component {
           post: data,
           likes: data.likes.length,
           like: this.checkLike(data.likes),
+          comments:data.comments
         });
       }
     });
+  };
+
+  updateComments = (comments) => {
+    this.setState({ comments:comments });
   };
 
   likeToggle = () => {
@@ -106,7 +113,7 @@ class SinglePost extends Component {
                 padding: "5px",
                 marginRight: "10px",
                 borderRadius: "50%",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
             />
             {likes} Like
@@ -121,7 +128,7 @@ class SinglePost extends Component {
                 padding: "5px",
                 marginRight: "10px",
                 borderRadius: "50%",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
             />
             {likes} Like
@@ -163,7 +170,7 @@ class SinglePost extends Component {
   };
 
   render() {
-    const { post, redirectToHome, redirectToSignin } = this.state;
+    const { post, redirectToHome, redirectToSignin, comments } = this.state;
 
     if (redirectToHome) {
       return <Redirect to={`/`} />;
@@ -181,6 +188,12 @@ class SinglePost extends Component {
         ) : (
           this.renderPost(post)
         )}
+
+        <Comment
+          postId={post._id}
+          comments={comments.reverse()}
+          updateComments={this.updateComments}
+        />
       </div>
     );
   }

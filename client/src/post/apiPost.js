@@ -1,6 +1,6 @@
 import { isAuthenticated } from "../core/Navbar";
 
-export const create = (userId, token, post) => {
+export const create = (userId, post) => {
   return fetch(`${process.env.REACT_APP_API_URL}/post/new/${userId}`, {
     method: "POST",
     headers: {
@@ -85,10 +85,10 @@ export const like = (userId, token, postId) => {
     method: "PUT",
     headers: {
       Accept: "application/json",
-      "Content-Type":"application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({userId,postId})
+    body: JSON.stringify({ userId, postId }),
   })
     .then((res) => {
       return res.json();
@@ -101,10 +101,10 @@ export const unlike = (userId, token, postId) => {
     method: "PUT",
     headers: {
       Accept: "application/json",
-      "Content-Type":"application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({userId,postId})
+    body: JSON.stringify({ userId, postId }),
   })
     .then((res) => {
       return res.json();
@@ -112,3 +112,34 @@ export const unlike = (userId, token, postId) => {
     .catch((err) => console.log(err));
 };
 
+export const comment = (userId, token, postId, comment) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/post/comment`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, postId, comment }),
+  })
+    .then(async res => {
+      return await res.json();
+    })
+    .catch((err) => console.log(err));
+};
+
+export const uncomment = (userId, token, postId, comment) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/post/uncomment`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, postId, comment }),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .catch((err) => console.log(err));
+};

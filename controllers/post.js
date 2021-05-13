@@ -186,3 +186,49 @@ exports.unlike = (req, res) => {
     }
   });
 };
+
+exports.comment = (req, res) => {
+
+  let comment = req.body.comment;
+  console.log(comment);
+  comment.postedBy = req.body.userId;
+
+  Post.findByIdAndUpdate(
+    req.body.postId,
+    { $push: { comments: comment } },
+    { new: true }
+  )
+    .populate("postedBy", "_id name")
+    .populate("comment.postedBy", "_id name")
+    .exec((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      } else {
+        res.json(result);
+      }
+    });
+};
+
+exports.uncomment = (req, res) => {
+  let comment = req.body.comment;
+
+  Post.findByIdAndUpdate(
+    req.body.postId,
+    { $pull: { comments: { _id: comment._id } } },
+    { new: true }
+  )
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name")
+
+    .exec((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      } else {
+        res.json(result);
+      }
+    });
+};
