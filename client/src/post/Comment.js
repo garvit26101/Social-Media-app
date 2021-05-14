@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { comment, uncomment } from "./apiPost";
 import { isAuthenticated } from "../core/Navbar";
 import { Link } from "react-router-dom";
-import avatar from "../images/avatar.jpg";
+// import avatar from "../images/avatar.jpg";
 
 class Comment extends Component {
   state = {
