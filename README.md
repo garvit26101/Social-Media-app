@@ -10,8 +10,4 @@
 
 ## How to access
 
-## Contact
 
-Email:**iamhiren5@gmail.com**
-
-Connect with me on [LinkedIn](https://www.linkedin.com/in/hiren-bhal-7658a4199/)
